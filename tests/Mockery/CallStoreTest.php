@@ -36,53 +36,50 @@ class CallStoreTest extends PHPUnit_Framework_TestCase
 
     public function testReturnsNullWhenNoArgs()
     {
-        $this->spy->shouldReceive('foo');
         $this->assertNull($this->spy->foo());
     }
     
-    /*public function testReturnsNullWhenSingleArg()
+    public function testReturnsNullWhenSingleArg()
     {
-        $this->spy->shouldReceive('foo');
         $this->assertNull($this->spy->foo(1));
     }
     
     public function testReturnsNullWhenManyArgs()
     {
-        $this->spy->shouldReceive('foo');
         $this->assertNull($this->spy->foo('foo', array(), new stdClass));
     }
     
     public function testReturnsSameValueForAllIfNoArgsExpectationAndNoneGiven()
     {
-        $this->spy->shouldReceive('foo')->andReturn(1);
+        $this->spy->whenReceives('foo')->thenReturn(1);
         $this->assertEquals(1, $this->spy->foo());
     }
     
     public function testReturnsSameValueForAllIfNoArgsExpectationAndSomeGiven()
     {
-        $this->spy->shouldReceive('foo')->andReturn(1);
+        $this->spy->whenReceives('foo')->thenReturn(1);
         $this->assertEquals(1, $this->spy->foo('foo'));
     }
     
     public function testReturnsValueFromSequenceSequentially()
     {
-        $this->spy->shouldReceive('foo')->andReturn(1, 2, 3);
+        $this->spy->whenReceives('foo')->thenReturn(1, 2, 3);
         $this->spy->foo('foo');
         $this->assertEquals(2, $this->spy->foo('foo'));
     }
     
     public function testReturnsValueFromSequenceSequentiallyAndRepeatedlyReturnsFinalValueOnExtraCalls()
     {
-        $this->spy->shouldReceive('foo')->andReturn(1, 2, 3);
+        $this->spy->whenReceives('foo')->thenReturn(1, 2, 3);
         $this->spy->foo('foo');
         $this->spy->foo('foo');
         $this->assertEquals(3, $this->spy->foo('foo'));
         $this->assertEquals(3, $this->spy->foo('foo'));
     }
     
-    public function testReturnsValueFromSequenceSequentiallyAndRepeatedlyReturnsFinalValueOnExtraCallsWithManyAndReturnCalls()
+    public function testReturnsValueFromSequenceSequentiallyAndRepeatedlyReturnsFinalValueOnExtraCallsWithManythenReturnCalls()
     {
-        $this->spy->shouldReceive('foo')->andReturn(1)->andReturn(2, 3);
+        $this->spy->whenReceives('foo')->thenReturn(1)->thenReturn(2, 3);
         $this->spy->foo('foo');
         $this->spy->foo('foo');
         $this->assertEquals(3, $this->spy->foo('foo'));
@@ -91,22 +88,22 @@ class CallStoreTest extends PHPUnit_Framework_TestCase
 
     public function testReturnsValueOfClosure()
     {
-        $this->spy->shouldReceive('foo')->with(5)->andReturnUsing(function($v){return $v+1;});
+        $this->spy->whenReceives('foo')->with(5)->thenReturnUsing(function($v){return $v+1;});
         $this->assertEquals(6, $this->spy->foo(5));
     }
     
     public function testReturnsUndefined()
     {
-        $this->spy->shouldReceive('foo')->andReturnUndefined();
+        $this->spy->whenReceives('foo')->thenReturnUndefined();
         $this->assertTrue($this->spy->foo() instanceof \Mockery\Undefined);
-    }*/
+    }
     
     /**
      * @expectedException OutOfBoundsException
      */
     /*public function testThrowsException()
     {
-        $this->spy->shouldReceive('foo')->andThrow(new OutOfBoundsException);
+        $this->spy->whenReceives('foo')->andThrow(new OutOfBoundsException);
         $this->spy->foo();
     }*/
     
@@ -115,13 +112,13 @@ class CallStoreTest extends PHPUnit_Framework_TestCase
      */
     /*public function testThrowsExceptionBasedOnArgs()
     {
-        $this->spy->shouldReceive('foo')->andThrow('OutOfBoundsException');
+        $this->spy->whenReceives('foo')->andThrow('OutOfBoundsException');
         $this->spy->foo();
     }
     
     public function testThrowsExceptionBasedOnArgsWithMessage()
     {
-        $this->spy->shouldReceive('foo')->andThrow('OutOfBoundsException', 'foo');
+        $this->spy->whenReceives('foo')->andThrow('OutOfBoundsException', 'foo');
         try {
             $this->spy->foo();
         } catch (OutOfBoundsException $e) {
@@ -134,7 +131,7 @@ class CallStoreTest extends PHPUnit_Framework_TestCase
      */
     /*public function testThrowsExceptionSequentially()
     {
-        $this->spy->shouldReceive('foo')->andThrow(new Exception)->andThrow(new OutOfBoundsException);
+        $this->spy->whenReceives('foo')->andThrow(new Exception)->andThrow(new OutOfBoundsException);
         try {
             $this->spy->foo();
         } catch (Exception $e) {}
@@ -143,15 +140,15 @@ class CallStoreTest extends PHPUnit_Framework_TestCase
     
     public function testMultipleExpectationsWithReturns()
     {
-        $this->spy->shouldReceive('foo')->with(1)->andReturn(10);
-        $this->spy->shouldReceive('bar')->with(2)->andReturn(20);
+        $this->spy->whenReceives('foo')->with(1)->thenReturn(10);
+        $this->spy->whenReceives('bar')->with(2)->thenReturn(20);
         $this->assertEquals(10, $this->spy->foo(1));
         $this->assertEquals(20, $this->spy->bar(2));
     }
     
     public function testExpectsNoArguments()
     {
-        $this->spy->shouldReceive('foo')->withNoArgs();
+        $this->spy->whenReceives('foo')->withNoArgs();
         $this->spy->foo();
     }*/
     
@@ -160,13 +157,13 @@ class CallStoreTest extends PHPUnit_Framework_TestCase
      */
     /*public function testExpectsNoArgumentsThrowsExceptionIfAnyPassed()
     {
-        $this->spy->shouldReceive('foo')->withNoArgs();
+        $this->spy->whenReceives('foo')->withNoArgs();
         $this->spy->foo(1);
     }
     
     public function testExpectsAnyArguments()
     {
-        $this->spy->shouldReceive('foo')->withAnyArgs();
+        $this->spy->whenReceives('foo')->withAnyArgs();
         $this->spy->foo();
         $this->spy->foo(1);
         $this->spy->foo(1, 'k', new stdClass);
@@ -174,13 +171,13 @@ class CallStoreTest extends PHPUnit_Framework_TestCase
     
     public function testExpectsArgumentMatchingRegularExpression()
     {
-        $this->spy->shouldReceive('foo')->with('/bar/i');
+        $this->spy->whenReceives('foo')->with('/bar/i');
         $this->spy->foo('xxBARxx');
     }
     
     public function testExpectsArgumentMatchingObjectType()
     {
-        $this->spy->shouldReceive('foo')->with('\stdClass');
+        $this->spy->whenReceives('foo')->with('\stdClass');
         $this->spy->foo(new stdClass);
     }*/
     
@@ -189,13 +186,13 @@ class CallStoreTest extends PHPUnit_Framework_TestCase
      */
     /*public function testThrowsExceptionOnNoArgumentMatch()
     {
-        $this->spy->shouldReceive('foo')->with(1);
+        $this->spy->whenReceives('foo')->with(1);
         $this->spy->foo(2);
     }
     
     public function testNeverCalled()
     {
-        $this->spy->shouldReceive('foo')->never();
+        $this->spy->whenReceives('foo')->never();
     }*/
     
     /**
@@ -203,14 +200,14 @@ class CallStoreTest extends PHPUnit_Framework_TestCase
      */
     /*public function testNeverCalledThrowsExceptionOnCall()
     {
-        $this->spy->shouldReceive('foo')->never();
+        $this->spy->whenReceives('foo')->never();
         $this->spy->foo();
         $this->container->mockery_verify();
     }
     
     public function testCalledOnce()
     {
-        $this->spy->shouldReceive('foo')->once();
+        $this->spy->whenReceives('foo')->once();
         $this->spy->foo();
         $this->container->mockery_verify();
     }*/
@@ -220,7 +217,7 @@ class CallStoreTest extends PHPUnit_Framework_TestCase
      */
     /*public function testCalledOnceThrowsExceptionIfNotCalled()
     {
-        $this->spy->shouldReceive('foo')->once();
+        $this->spy->whenReceives('foo')->once();
         $this->container->mockery_verify();
     }*/
     
@@ -229,7 +226,7 @@ class CallStoreTest extends PHPUnit_Framework_TestCase
      */
     /*public function testCalledOnceThrowsExceptionIfCalledTwice()
     {
-        $this->spy->shouldReceive('foo')->once();
+        $this->spy->whenReceives('foo')->once();
         $this->spy->foo();
         $this->spy->foo();
         $this->container->mockery_verify();
@@ -237,7 +234,7 @@ class CallStoreTest extends PHPUnit_Framework_TestCase
     
     public function testCalledTwice()
     {
-        $this->spy->shouldReceive('foo')->twice();
+        $this->spy->whenReceives('foo')->twice();
         $this->spy->foo();
         $this->spy->foo();
         $this->container->mockery_verify();
@@ -248,7 +245,7 @@ class CallStoreTest extends PHPUnit_Framework_TestCase
      */
     /*public function testCalledTwiceThrowsExceptionIfNotCalled()
     {
-        $this->spy->shouldReceive('foo')->twice();
+        $this->spy->whenReceives('foo')->twice();
         $this->container->mockery_verify();
     }*/
     
@@ -257,7 +254,7 @@ class CallStoreTest extends PHPUnit_Framework_TestCase
      */
     /*public function testCalledOnceThrowsExceptionIfCalledThreeTimes()
     {
-        $this->spy->shouldReceive('foo')->twice();
+        $this->spy->whenReceives('foo')->twice();
         $this->spy->foo();
         $this->spy->foo();
         $this->spy->foo();
@@ -266,13 +263,13 @@ class CallStoreTest extends PHPUnit_Framework_TestCase
     
     public function testCalledZeroOrMoreTimesAtZeroCalls()
     {
-        $this->spy->shouldReceive('foo')->zeroOrMoreTimes();
+        $this->spy->whenReceives('foo')->zeroOrMoreTimes();
         $this->container->mockery_verify();
     }
     
     public function testCalledZeroOrMoreTimesAtThreeCalls()
     {
-        $this->spy->shouldReceive('foo')->zeroOrMoreTimes();
+        $this->spy->whenReceives('foo')->zeroOrMoreTimes();
         $this->spy->foo();
         $this->spy->foo();
         $this->spy->foo();
@@ -281,7 +278,7 @@ class CallStoreTest extends PHPUnit_Framework_TestCase
     
     public function testTimesCountCalls()
     {
-        $this->spy->shouldReceive('foo')->times(4);
+        $this->spy->whenReceives('foo')->times(4);
         $this->spy->foo();
         $this->spy->foo();
         $this->spy->foo();
@@ -294,7 +291,7 @@ class CallStoreTest extends PHPUnit_Framework_TestCase
      */
     /*public function testTimesCountCallThrowsExceptionOnTooFewCalls()
     {
-        $this->spy->shouldReceive('foo')->times(2);
+        $this->spy->whenReceives('foo')->times(2);
         $this->spy->foo();
         $this->container->mockery_verify();
     }*/
@@ -304,7 +301,7 @@ class CallStoreTest extends PHPUnit_Framework_TestCase
      */
     /*public function testTimesCountCallThrowsExceptionOnTooManyCalls()
     {
-        $this->spy->shouldReceive('foo')->times(2);
+        $this->spy->whenReceives('foo')->times(2);
         $this->spy->foo();
         $this->spy->foo();
         $this->spy->foo();
@@ -313,14 +310,14 @@ class CallStoreTest extends PHPUnit_Framework_TestCase
     
     public function testCalledAtLeastOnceAtExactlyOneCall()
     {
-        $this->spy->shouldReceive('foo')->atLeast()->once();
+        $this->spy->whenReceives('foo')->atLeast()->once();
         $this->spy->foo();
         $this->container->mockery_verify();
     }
     
     public function testCalledAtLeastOnceAtExactlyThreeCalls()
     {
-        $this->spy->shouldReceive('foo')->atLeast()->times(3);
+        $this->spy->whenReceives('foo')->atLeast()->times(3);
         $this->spy->foo();
         $this->spy->foo();
         $this->spy->foo();
@@ -332,21 +329,21 @@ class CallStoreTest extends PHPUnit_Framework_TestCase
      */
     /*public function testCalledAtLeastThrowsExceptionOnTooFewCalls()
     {
-        $this->spy->shouldReceive('foo')->atLeast()->twice();
+        $this->spy->whenReceives('foo')->atLeast()->twice();
         $this->spy->foo();
         $this->container->mockery_verify();
     }
     
     public function testCalledAtMostOnceAtExactlyOneCall()
     {
-        $this->spy->shouldReceive('foo')->atMost()->once();
+        $this->spy->whenReceives('foo')->atMost()->once();
         $this->spy->foo();
         $this->container->mockery_verify();
     }
     
     public function testCalledAtMostAtExactlyThreeCalls()
     {
-        $this->spy->shouldReceive('foo')->atMost()->times(3);
+        $this->spy->whenReceives('foo')->atMost()->times(3);
         $this->spy->foo();
         $this->spy->foo();
         $this->spy->foo();
@@ -358,7 +355,7 @@ class CallStoreTest extends PHPUnit_Framework_TestCase
      */
     /*public function testCalledAtLeastThrowsExceptionOnTooManyCalls()
     {
-        $this->spy->shouldReceive('foo')->atMost()->twice();
+        $this->spy->whenReceives('foo')->atMost()->twice();
         $this->spy->foo();
         $this->spy->foo();
         $this->spy->foo();
@@ -370,7 +367,7 @@ class CallStoreTest extends PHPUnit_Framework_TestCase
      */
     /*public function testExactCountersOverrideAnyPriorSetNonExactCounters()
     {
-        $this->spy->shouldReceive('foo')->atLeast()->once()->once();
+        $this->spy->whenReceives('foo')->atLeast()->once()->once();
         $this->spy->foo();
         $this->spy->foo();
         $this->container->mockery_verify();
@@ -378,14 +375,14 @@ class CallStoreTest extends PHPUnit_Framework_TestCase
     
     public function testComboOfLeastAndMostCallsWithOneCall()
     {
-        $this->spy->shouldReceive('foo')->atleast()->once()->atMost()->twice();
+        $this->spy->whenReceives('foo')->atleast()->once()->atMost()->twice();
         $this->spy->foo();
         $this->container->mockery_verify(); 
     }
     
     public function testComboOfLeastAndMostCallsWithTwoCalls()
     {
-        $this->spy->shouldReceive('foo')->atleast()->once()->atMost()->twice();
+        $this->spy->whenReceives('foo')->atleast()->once()->atMost()->twice();
         $this->spy->foo();
         $this->spy->foo();
         $this->container->mockery_verify(); 
@@ -396,7 +393,7 @@ class CallStoreTest extends PHPUnit_Framework_TestCase
      */
     /*public function testComboOfLeastAndMostCallsThrowsExceptionAtTooFewCalls()
     {
-        $this->spy->shouldReceive('foo')->atleast()->once()->atMost()->twice();
+        $this->spy->whenReceives('foo')->atleast()->once()->atMost()->twice();
         $this->container->mockery_verify(); 
     }*/
     
@@ -405,7 +402,7 @@ class CallStoreTest extends PHPUnit_Framework_TestCase
      */
     /*public function testComboOfLeastAndMostCallsThrowsExceptionAtTooManyCalls()
     {
-        $this->spy->shouldReceive('foo')->atleast()->once()->atMost()->twice();
+        $this->spy->whenReceives('foo')->atleast()->once()->atMost()->twice();
         $this->spy->foo();
         $this->spy->foo();
         $this->spy->foo();
@@ -414,9 +411,9 @@ class CallStoreTest extends PHPUnit_Framework_TestCase
     
     public function testCallCountingOnlyAppliesToMatchedExpectations()
     {
-        $this->spy->shouldReceive('foo')->with(1)->once();
-        $this->spy->shouldReceive('foo')->with(2)->twice();
-        $this->spy->shouldReceive('foo')->with(3);
+        $this->spy->whenReceives('foo')->with(1)->once();
+        $this->spy->whenReceives('foo')->with(2)->twice();
+        $this->spy->whenReceives('foo')->with(3);
         $this->spy->foo(1);
         $this->spy->foo(2);
         $this->spy->foo(2);
@@ -429,10 +426,10 @@ class CallStoreTest extends PHPUnit_Framework_TestCase
      */
     /*public function testCallCountingThrowsExceptionOnAnyMismatch()
     {
-        $this->spy->shouldReceive('foo')->with(1)->once();
-        $this->spy->shouldReceive('foo')->with(2)->twice();
-        $this->spy->shouldReceive('foo')->with(3);
-        $this->spy->shouldReceive('bar');
+        $this->spy->whenReceives('foo')->with(1)->once();
+        $this->spy->whenReceives('foo')->with(2)->twice();
+        $this->spy->whenReceives('foo')->with(3);
+        $this->spy->whenReceives('bar');
         $this->spy->foo(1);
         $this->spy->foo(2);
         $this->spy->foo(3);
@@ -442,8 +439,8 @@ class CallStoreTest extends PHPUnit_Framework_TestCase
     
     public function testOrderedCallsWithoutError()
     {
-        $this->spy->shouldReceive('foo')->ordered();
-        $this->spy->shouldReceive('bar')->ordered();
+        $this->spy->whenReceives('foo')->ordered();
+        $this->spy->whenReceives('bar')->ordered();
         $this->spy->foo();
         $this->spy->bar();
         $this->container->mockery_verify();
@@ -454,8 +451,8 @@ class CallStoreTest extends PHPUnit_Framework_TestCase
      */
     /*public function testOrderedCallsWithOutOfOrderError()
     {
-        $this->spy->shouldReceive('foo')->ordered();
-        $this->spy->shouldReceive('bar')->ordered();
+        $this->spy->whenReceives('foo')->ordered();
+        $this->spy->whenReceives('bar')->ordered();
         $this->spy->bar();
         $this->spy->foo();
         $this->container->mockery_verify();
@@ -463,8 +460,8 @@ class CallStoreTest extends PHPUnit_Framework_TestCase
     
     public function testDifferentArgumentsAndOrderingsPassWithoutException()
     {
-        $this->spy->shouldReceive('foo')->with(1)->ordered();
-        $this->spy->shouldReceive('foo')->with(2)->ordered();
+        $this->spy->whenReceives('foo')->with(1)->ordered();
+        $this->spy->whenReceives('foo')->with(2)->ordered();
         $this->spy->foo(1);
         $this->spy->foo(2);
         $this->container->mockery_verify();
@@ -475,8 +472,8 @@ class CallStoreTest extends PHPUnit_Framework_TestCase
      */
     /*public function testDifferentArgumentsAndOrderingsThrowExceptionWhenInWrongOrder()
     {
-        $this->spy->shouldReceive('foo')->with(1)->ordered();
-        $this->spy->shouldReceive('foo')->with(2)->ordered();
+        $this->spy->whenReceives('foo')->with(1)->ordered();
+        $this->spy->whenReceives('foo')->with(2)->ordered();
         $this->spy->foo(2);
         $this->spy->foo(1);
         $this->container->mockery_verify();
@@ -484,9 +481,9 @@ class CallStoreTest extends PHPUnit_Framework_TestCase
     
     public function testUnorderedCallsIgnoredForOrdering()
     {
-        $this->spy->shouldReceive('foo')->with(1)->ordered();
-        $this->spy->shouldReceive('foo')->with(2);
-        $this->spy->shouldReceive('foo')->with(3)->ordered();
+        $this->spy->whenReceives('foo')->with(1)->ordered();
+        $this->spy->whenReceives('foo')->with(2);
+        $this->spy->whenReceives('foo')->with(3)->ordered();
         $this->spy->foo(2);
         $this->spy->foo(1);
         $this->spy->foo(2);
@@ -497,8 +494,8 @@ class CallStoreTest extends PHPUnit_Framework_TestCase
     
     public function testOrderingOfDefaultGrouping()
     {
-        $this->spy->shouldReceive('foo')->ordered();
-        $this->spy->shouldReceive('bar')->ordered();
+        $this->spy->whenReceives('foo')->ordered();
+        $this->spy->whenReceives('bar')->ordered();
         $this->spy->foo();
         $this->spy->bar();
         $this->container->mockery_verify();
@@ -509,8 +506,8 @@ class CallStoreTest extends PHPUnit_Framework_TestCase
      */
     /*public function testOrderingOfDefaultGroupingThrowsExceptionOnWrongOrder()
     {
-        $this->spy->shouldReceive('foo')->ordered();
-        $this->spy->shouldReceive('bar')->ordered();
+        $this->spy->whenReceives('foo')->ordered();
+        $this->spy->whenReceives('bar')->ordered();
         $this->spy->bar();
         $this->spy->foo();
         $this->container->mockery_verify();
@@ -518,10 +515,10 @@ class CallStoreTest extends PHPUnit_Framework_TestCase
     
     public function testOrderingUsingNumberedGroups()
     {
-        $this->spy->shouldReceive('start')->ordered(1);
-        $this->spy->shouldReceive('foo')->ordered(2);
-        $this->spy->shouldReceive('bar')->ordered(2);
-        $this->spy->shouldReceive('final')->ordered();
+        $this->spy->whenReceives('start')->ordered(1);
+        $this->spy->whenReceives('foo')->ordered(2);
+        $this->spy->whenReceives('bar')->ordered(2);
+        $this->spy->whenReceives('final')->ordered();
         $this->spy->start();
         $this->spy->bar();
         $this->spy->foo();
@@ -532,10 +529,10 @@ class CallStoreTest extends PHPUnit_Framework_TestCase
     
     /*public function testOrderingUsingNamedGroups()
     {
-        $this->spy->shouldReceive('start')->ordered('start');
-        $this->spy->shouldReceive('foo')->ordered('foobar');
-        $this->spy->shouldReceive('bar')->ordered('foobar');
-        $this->spy->shouldReceive('final')->ordered();
+        $this->spy->whenReceives('start')->ordered('start');
+        $this->spy->whenReceives('foo')->ordered('foobar');
+        $this->spy->whenReceives('bar')->ordered('foobar');
+        $this->spy->whenReceives('final')->ordered();
         $this->spy->start();
         $this->spy->bar();
         $this->spy->foo();
@@ -546,9 +543,9 @@ class CallStoreTest extends PHPUnit_Framework_TestCase
     
     public function testGroupedUngroupedOrderingDoNotOverlap()
     {
-        $s = $this->spy->shouldReceive('start')->ordered();
-        $m = $this->spy->shouldReceive('mid')->ordered('foobar');
-        $e = $this->spy->shouldReceive('end')->ordered();
+        $s = $this->spy->whenReceives('start')->ordered();
+        $m = $this->spy->whenReceives('mid')->ordered('foobar');
+        $e = $this->spy->whenReceives('end')->ordered();
         $this->assertTrue($s->getOrderNumber() < $m->getOrderNumber());
         $this->assertTrue($m->getOrderNumber() < $e->getOrderNumber());
     }*/
@@ -558,8 +555,8 @@ class CallStoreTest extends PHPUnit_Framework_TestCase
      */
     /*public function testGroupedOrderingThrowsExceptionWhenCallsDisordered()
     {
-        $this->spy->shouldReceive('foo')->ordered('first');
-        $this->spy->shouldReceive('bar')->ordered('second');
+        $this->spy->whenReceives('foo')->ordered('first');
+        $this->spy->whenReceives('bar')->ordered('second');
         $this->spy->bar();
         $this->spy->foo();
         $this->container->mockery_verify();
@@ -567,9 +564,9 @@ class CallStoreTest extends PHPUnit_Framework_TestCase
     
     public function testExpectationMatchingWithNoArgsOrderings()
     {
-        $this->spy->shouldReceive('foo')->withNoArgs()->once()->ordered();
-        $this->spy->shouldReceive('bar')->withNoArgs()->once()->ordered();
-        $this->spy->shouldReceive('foo')->withNoArgs()->once()->ordered();
+        $this->spy->whenReceives('foo')->withNoArgs()->once()->ordered();
+        $this->spy->whenReceives('bar')->withNoArgs()->once()->ordered();
+        $this->spy->whenReceives('foo')->withNoArgs()->once()->ordered();
         $this->spy->foo();
         $this->spy->bar();
         $this->spy->foo();
@@ -578,9 +575,9 @@ class CallStoreTest extends PHPUnit_Framework_TestCase
     
     public function testExpectationMatchingWithAnyArgsOrderings()
     {
-        $this->spy->shouldReceive('foo')->withAnyArgs()->once()->ordered();
-        $this->spy->shouldReceive('bar')->withAnyArgs()->once()->ordered();
-        $this->spy->shouldReceive('foo')->withAnyArgs()->once()->ordered();
+        $this->spy->whenReceives('foo')->withAnyArgs()->once()->ordered();
+        $this->spy->whenReceives('bar')->withAnyArgs()->once()->ordered();
+        $this->spy->whenReceives('foo')->withAnyArgs()->once()->ordered();
         $this->spy->foo();
         $this->spy->bar();
         $this->spy->foo();
@@ -589,9 +586,9 @@ class CallStoreTest extends PHPUnit_Framework_TestCase
     
     public function testEnsuresOrderingIsNotCrossMockByDefault()
     {
-        $this->spy->shouldReceive('foo')->ordered();
+        $this->spy->whenReceives('foo')->ordered();
         $mock2 = $this->container->mock('bar');
-        $mock2->shouldReceive('bar')->ordered();
+        $mock2->whenReceives('bar')->ordered();
         $mock2->bar();
         $this->spy->foo();
     }*/
@@ -601,30 +598,30 @@ class CallStoreTest extends PHPUnit_Framework_TestCase
      */
     /*public function testEnsuresOrderingIsCrossMockWhenGloballyFlagSet()
     {
-        $this->spy->shouldReceive('foo')->globally()->ordered();
+        $this->spy->whenReceives('foo')->globally()->ordered();
         $mock2 = $this->container->mock('bar');
-        $mock2->shouldReceive('bar')->globally()->ordered();
+        $mock2->whenReceives('bar')->globally()->ordered();
         $mock2->bar();
         $this->spy->foo();
     }
     
     public function testExpectationCastToStringFormatting()
     {
-        $exp = $this->spy->shouldReceive('foo')->with(1, 'bar', new stdClass, array());
+        $exp = $this->spy->whenReceives('foo')->with(1, 'bar', new stdClass, array());
         $this->assertEquals('[foo(1, "bar", stdClass, Array)]', (string) $exp);
     }
     
     public function testMultipleExpectationCastToStringFormatting()
     {
-        $exp = $this->spy->shouldReceive('foo', 'bar')->with(1);
+        $exp = $this->spy->whenReceives('foo', 'bar')->with(1);
         $this->assertEquals('[foo(1), bar(1)]', (string) $exp);
     }
     
     public function testGroupedOrderingWithLimitsAllowsMultipleReturnValues()
     {
-        $this->spy->shouldReceive('foo')->with(2)->once()->andReturn('first');
-        $this->spy->shouldReceive('foo')->with(2)->twice()->andReturn('second/third');
-        $this->spy->shouldReceive('foo')->with(2)->andReturn('infinity');
+        $this->spy->whenReceives('foo')->with(2)->once()->thenReturn('first');
+        $this->spy->whenReceives('foo')->with(2)->twice()->thenReturn('second/third');
+        $this->spy->whenReceives('foo')->with(2)->thenReturn('infinity');
         $this->assertEquals('first', $this->spy->foo(2));
         $this->assertEquals('second/third', $this->spy->foo(2));
         $this->assertEquals('second/third', $this->spy->foo(2));
@@ -636,15 +633,15 @@ class CallStoreTest extends PHPUnit_Framework_TestCase
     
     public function testExpectationsCanBeMarkedAsDefaults()
     {
-        $this->spy->shouldReceive('foo')->andReturn('bar')->byDefault();
+        $this->spy->whenReceives('foo')->thenReturn('bar')->byDefault();
         $this->assertEquals('bar', $this->spy->foo());
         $this->container->mockery_verify();
     }
     
     public function testDefaultExpectationsValidatedInCorrectOrder()
     {
-        $this->spy->shouldReceive('foo')->with(1)->once()->andReturn('first')->byDefault();
-        $this->spy->shouldReceive('foo')->with(2)->once()->andReturn('second')->byDefault();
+        $this->spy->whenReceives('foo')->with(1)->once()->thenReturn('first')->byDefault();
+        $this->spy->whenReceives('foo')->with(2)->once()->thenReturn('second')->byDefault();
         $this->assertEquals('first', $this->spy->foo(1));
         $this->assertEquals('second', $this->spy->foo(2));
         $this->container->mockery_verify();
@@ -652,8 +649,8 @@ class CallStoreTest extends PHPUnit_Framework_TestCase
     
     public function testDefaultExpectationsAreReplacedByLaterConcreteExpectations()
     {
-        $this->spy->shouldReceive('foo')->andReturn('bar')->once()->byDefault();
-        $this->spy->shouldReceive('foo')->andReturn('bar')->twice();
+        $this->spy->whenReceives('foo')->thenReturn('bar')->once()->byDefault();
+        $this->spy->whenReceives('foo')->thenReturn('bar')->twice();
         $this->spy->foo();
         $this->spy->foo();
         $this->container->mockery_verify();
@@ -661,8 +658,8 @@ class CallStoreTest extends PHPUnit_Framework_TestCase
     
     public function testDefaultExpectationsCanBeChangedByLaterExpectations()
     {
-        $this->spy->shouldReceive('foo')->with(1)->andReturn('bar')->once()->byDefault();
-        $this->spy->shouldReceive('foo')->with(2)->andReturn('baz')->once();
+        $this->spy->whenReceives('foo')->with(1)->thenReturn('bar')->once()->byDefault();
+        $this->spy->whenReceives('foo')->with(2)->thenReturn('baz')->once();
         try {
             $this->spy->foo(1);
             $this->fail('Expected exception not thrown');
@@ -676,8 +673,8 @@ class CallStoreTest extends PHPUnit_Framework_TestCase
      */
     /*public function testDefaultExpectationsCanBeOrdered()
     {
-        $this->spy->shouldReceive('foo')->ordered()->byDefault();
-        $this->spy->shouldReceive('bar')->ordered()->byDefault();
+        $this->spy->whenReceives('foo')->ordered()->byDefault();
+        $this->spy->whenReceives('bar')->ordered()->byDefault();
         $this->spy->bar();
         $this->spy->foo();
         $this->container->mockery_verify();
@@ -685,10 +682,10 @@ class CallStoreTest extends PHPUnit_Framework_TestCase
     
     public function testDefaultExpectationsCanBeOrderedAndReplaced()
     {
-        $this->spy->shouldReceive('foo')->ordered()->byDefault();
-        $this->spy->shouldReceive('bar')->ordered()->byDefault();
-        $this->spy->shouldReceive('bar')->ordered();
-        $this->spy->shouldReceive('foo')->ordered();
+        $this->spy->whenReceives('foo')->ordered()->byDefault();
+        $this->spy->whenReceives('bar')->ordered()->byDefault();
+        $this->spy->whenReceives('bar')->ordered();
+        $this->spy->whenReceives('foo')->ordered();
         $this->spy->bar();
         $this->spy->foo();
         $this->container->mockery_verify();
@@ -698,7 +695,7 @@ class CallStoreTest extends PHPUnit_Framework_TestCase
     {
         $container = new \Mockery\Container;
         $mock = $container->mock('f', array('foo'=>'rfoo','bar'=>'rbar','baz'=>'rbaz'))->byDefault();
-        $mock->shouldReceive('foo')->andReturn('foobar');
+        $mock->whenReceives('foo')->thenReturn('foobar');
         $this->assertEquals('foobar', $mock->foo());
         $this->assertEquals('rbar', $mock->bar());
         $this->assertEquals('rbaz', $mock->baz());
@@ -716,14 +713,14 @@ class CallStoreTest extends PHPUnit_Framework_TestCase
      */
     /*public function testByDefaultPreventedFromSettingDefaultWhenDefaultingExpectationWasReplaced()
     {
-        $exp = $this->spy->shouldReceive('foo')->andReturn(1);
-        $this->spy->shouldReceive('foo')->andReturn(2);
+        $exp = $this->spy->whenReceives('foo')->thenReturn(1);
+        $this->spy->whenReceives('foo')->thenReturn(2);
         $exp->byDefault();
     }
     
     public function testAnyConstraintMatchesAnyArg()
     {
-        $this->spy->shouldReceive('foo')->with(1, Mockery::any())->twice();
+        $this->spy->whenReceives('foo')->with(1, Mockery::any())->twice();
         $this->spy->foo(1, 2);
         $this->spy->foo(1, 'str');
         $this->container->mockery_verify();
@@ -731,8 +728,8 @@ class CallStoreTest extends PHPUnit_Framework_TestCase
     
     public function testAnyConstraintNonMatchingCase()
     {
-        $this->spy->shouldReceive('foo')->times(3);
-        $this->spy->shouldReceive('foo')->with(1, Mockery::any())->never();
+        $this->spy->whenReceives('foo')->times(3);
+        $this->spy->whenReceives('foo')->with(1, Mockery::any())->never();
         $this->spy->foo();
         $this->spy->foo(1);
         $this->spy->foo(1, 2, 3);
@@ -741,15 +738,15 @@ class CallStoreTest extends PHPUnit_Framework_TestCase
     
     public function testArrayConstraintMatchesArgument()
     {
-        $this->spy->shouldReceive('foo')->with(Mockery::type('array'))->once();
+        $this->spy->whenReceives('foo')->with(Mockery::type('array'))->once();
         $this->spy->foo(array());
         $this->container->mockery_verify();
     }
     
     public function testArrayConstraintNonMatchingCase()
     {
-        $this->spy->shouldReceive('foo')->times(3);
-        $this->spy->shouldReceive('foo')->with(1, Mockery::type('array'))->never();
+        $this->spy->whenReceives('foo')->times(3);
+        $this->spy->whenReceives('foo')->with(1, Mockery::type('array'))->never();
         $this->spy->foo();
         $this->spy->foo(1);
         $this->spy->foo(1, 2, 3);
@@ -761,22 +758,22 @@ class CallStoreTest extends PHPUnit_Framework_TestCase
      */
     /*public function testArrayConstraintThrowsExceptionWhenConstraintUnmatched()
     {
-        $this->spy->shouldReceive('foo')->with(Mockery::type('array'))->once();
+        $this->spy->whenReceives('foo')->with(Mockery::type('array'))->once();
         $this->spy->foo(1);
         $this->container->mockery_verify();
     }
     
     public function testBoolConstraintMatchesArgument()
     {
-        $this->spy->shouldReceive('foo')->with(Mockery::type('bool'))->once();
+        $this->spy->whenReceives('foo')->with(Mockery::type('bool'))->once();
         $this->spy->foo(true);
         $this->container->mockery_verify();
     }
     
     public function testBoolConstraintNonMatchingCase()
     {
-        $this->spy->shouldReceive('foo')->times(3);
-        $this->spy->shouldReceive('foo')->with(1, Mockery::type('bool'))->never();
+        $this->spy->whenReceives('foo')->times(3);
+        $this->spy->whenReceives('foo')->with(1, Mockery::type('bool'))->never();
         $this->spy->foo();
         $this->spy->foo(1);
         $this->spy->foo(1, 2, 3);
@@ -788,22 +785,22 @@ class CallStoreTest extends PHPUnit_Framework_TestCase
      */
     /*public function testBoolConstraintThrowsExceptionWhenConstraintUnmatched()
     {
-        $this->spy->shouldReceive('foo')->with(Mockery::type('bool'))->once();
+        $this->spy->whenReceives('foo')->with(Mockery::type('bool'))->once();
         $this->spy->foo(1);
         $this->container->mockery_verify();
     }
     
     public function testCallableConstraintMatchesArgument()
     {
-        $this->spy->shouldReceive('foo')->with(Mockery::type('callable'))->once();
+        $this->spy->whenReceives('foo')->with(Mockery::type('callable'))->once();
         $this->spy->foo(function(){return 'f';});
         $this->container->mockery_verify();
     }
     
     public function testCallableConstraintNonMatchingCase()
     {
-        $this->spy->shouldReceive('foo')->times(3);
-        $this->spy->shouldReceive('foo')->with(1, Mockery::type('callable'))->never();
+        $this->spy->whenReceives('foo')->times(3);
+        $this->spy->whenReceives('foo')->with(1, Mockery::type('callable'))->never();
         $this->spy->foo();
         $this->spy->foo(1);
         $this->spy->foo(1, 2, 3);
@@ -815,22 +812,22 @@ class CallStoreTest extends PHPUnit_Framework_TestCase
      */
     /*public function testCallableConstraintThrowsExceptionWhenConstraintUnmatched()
     {
-        $this->spy->shouldReceive('foo')->with(Mockery::type('callable'))->once();
+        $this->spy->whenReceives('foo')->with(Mockery::type('callable'))->once();
         $this->spy->foo(1);
         $this->container->mockery_verify();
     }
     
     public function testDoubleConstraintMatchesArgument()
     {
-        $this->spy->shouldReceive('foo')->with(Mockery::type('double'))->once();
+        $this->spy->whenReceives('foo')->with(Mockery::type('double'))->once();
         $this->spy->foo(2.25);
         $this->container->mockery_verify();
     }
     
     public function testDoubleConstraintNonMatchingCase()
     {
-        $this->spy->shouldReceive('foo')->times(3);
-        $this->spy->shouldReceive('foo')->with(1, Mockery::type('double'))->never();
+        $this->spy->whenReceives('foo')->times(3);
+        $this->spy->whenReceives('foo')->with(1, Mockery::type('double'))->never();
         $this->spy->foo();
         $this->spy->foo(1);
         $this->spy->foo(1, 2, 3);
@@ -842,22 +839,22 @@ class CallStoreTest extends PHPUnit_Framework_TestCase
      */
     /*public function testDoubleConstraintThrowsExceptionWhenConstraintUnmatched()
     {
-        $this->spy->shouldReceive('foo')->with(Mockery::type('double'))->once();
+        $this->spy->whenReceives('foo')->with(Mockery::type('double'))->once();
         $this->spy->foo(1);
         $this->container->mockery_verify();
     }
     
     public function testFloatConstraintMatchesArgument()
     {
-        $this->spy->shouldReceive('foo')->with(Mockery::type('float'))->once();
+        $this->spy->whenReceives('foo')->with(Mockery::type('float'))->once();
         $this->spy->foo(2.25);
         $this->container->mockery_verify();
     }
     
     public function testFloatConstraintNonMatchingCase()
     {
-        $this->spy->shouldReceive('foo')->times(3);
-        $this->spy->shouldReceive('foo')->with(1, Mockery::type('float'))->never();
+        $this->spy->whenReceives('foo')->times(3);
+        $this->spy->whenReceives('foo')->with(1, Mockery::type('float'))->never();
         $this->spy->foo();
         $this->spy->foo(1);
         $this->spy->foo(1, 2, 3);
@@ -869,22 +866,22 @@ class CallStoreTest extends PHPUnit_Framework_TestCase
      */
     /*public function testFloatConstraintThrowsExceptionWhenConstraintUnmatched()
     {
-        $this->spy->shouldReceive('foo')->with(Mockery::type('float'))->once();
+        $this->spy->whenReceives('foo')->with(Mockery::type('float'))->once();
         $this->spy->foo(1);
         $this->container->mockery_verify();
     }
     
     public function testIntConstraintMatchesArgument()
     {
-        $this->spy->shouldReceive('foo')->with(Mockery::type('int'))->once();
+        $this->spy->whenReceives('foo')->with(Mockery::type('int'))->once();
         $this->spy->foo(2);
         $this->container->mockery_verify();
     }
     
     public function testIntConstraintNonMatchingCase()
     {
-        $this->spy->shouldReceive('foo')->times(3);
-        $this->spy->shouldReceive('foo')->with(1, Mockery::type('int'))->never();
+        $this->spy->whenReceives('foo')->times(3);
+        $this->spy->whenReceives('foo')->with(1, Mockery::type('int'))->never();
         $this->spy->foo();
         $this->spy->foo(1);
         $this->spy->foo(1, 2, 3);
@@ -896,22 +893,22 @@ class CallStoreTest extends PHPUnit_Framework_TestCase
      */
     /*public function testIntConstraintThrowsExceptionWhenConstraintUnmatched()
     {
-        $this->spy->shouldReceive('foo')->with(Mockery::type('int'))->once();
+        $this->spy->whenReceives('foo')->with(Mockery::type('int'))->once();
         $this->spy->foo('f');
         $this->container->mockery_verify();
     }
     
     public function testLongConstraintMatchesArgument()
     {
-        $this->spy->shouldReceive('foo')->with(Mockery::type('long'))->once();
+        $this->spy->whenReceives('foo')->with(Mockery::type('long'))->once();
         $this->spy->foo(2);
         $this->container->mockery_verify();
     }
     
     public function testLongConstraintNonMatchingCase()
     {
-        $this->spy->shouldReceive('foo')->times(3);
-        $this->spy->shouldReceive('foo')->with(1, Mockery::type('long'))->never();
+        $this->spy->whenReceives('foo')->times(3);
+        $this->spy->whenReceives('foo')->with(1, Mockery::type('long'))->never();
         $this->spy->foo();
         $this->spy->foo(1);
         $this->spy->foo(1, 2, 3);
@@ -923,22 +920,22 @@ class CallStoreTest extends PHPUnit_Framework_TestCase
      */
     /*public function testLongConstraintThrowsExceptionWhenConstraintUnmatched()
     {
-        $this->spy->shouldReceive('foo')->with(Mockery::type('long'))->once();
+        $this->spy->whenReceives('foo')->with(Mockery::type('long'))->once();
         $this->spy->foo('f');
         $this->container->mockery_verify();
     }
     
     public function testNullConstraintMatchesArgument()
     {
-        $this->spy->shouldReceive('foo')->with(Mockery::type('null'))->once();
+        $this->spy->whenReceives('foo')->with(Mockery::type('null'))->once();
         $this->spy->foo(null);
         $this->container->mockery_verify();
     }
     
     public function testNullConstraintNonMatchingCase()
     {
-        $this->spy->shouldReceive('foo')->times(3);
-        $this->spy->shouldReceive('foo')->with(1, Mockery::type('null'))->never();
+        $this->spy->whenReceives('foo')->times(3);
+        $this->spy->whenReceives('foo')->with(1, Mockery::type('null'))->never();
         $this->spy->foo();
         $this->spy->foo(1);
         $this->spy->foo(1, 2, 3);
@@ -950,22 +947,22 @@ class CallStoreTest extends PHPUnit_Framework_TestCase
      */
     /*public function testNullConstraintThrowsExceptionWhenConstraintUnmatched()
     {
-        $this->spy->shouldReceive('foo')->with(Mockery::type('null'))->once();
+        $this->spy->whenReceives('foo')->with(Mockery::type('null'))->once();
         $this->spy->foo('f');
         $this->container->mockery_verify();
     }
     
     public function testNumericConstraintMatchesArgument()
     {
-        $this->spy->shouldReceive('foo')->with(Mockery::type('numeric'))->once();
+        $this->spy->whenReceives('foo')->with(Mockery::type('numeric'))->once();
         $this->spy->foo('2');
         $this->container->mockery_verify();
     }
     
     public function testNumericConstraintNonMatchingCase()
     {
-        $this->spy->shouldReceive('foo')->times(3);
-        $this->spy->shouldReceive('foo')->with(1, Mockery::type('numeric'))->never();
+        $this->spy->whenReceives('foo')->times(3);
+        $this->spy->whenReceives('foo')->with(1, Mockery::type('numeric'))->never();
         $this->spy->foo();
         $this->spy->foo(1);
         $this->spy->foo(1, 2, 3);
@@ -977,22 +974,22 @@ class CallStoreTest extends PHPUnit_Framework_TestCase
      */
     /*public function testNumericConstraintThrowsExceptionWhenConstraintUnmatched()
     {
-        $this->spy->shouldReceive('foo')->with(Mockery::type('numeric'))->once();
+        $this->spy->whenReceives('foo')->with(Mockery::type('numeric'))->once();
         $this->spy->foo('f');
         $this->container->mockery_verify();
     }
     
     public function testObjectConstraintMatchesArgument()
     {
-        $this->spy->shouldReceive('foo')->with(Mockery::type('object'))->once();
+        $this->spy->whenReceives('foo')->with(Mockery::type('object'))->once();
         $this->spy->foo(new stdClass);
         $this->container->mockery_verify();
     }
     
     public function testObjectConstraintNonMatchingCase()
     {
-        $this->spy->shouldReceive('foo')->times(3);
-        $this->spy->shouldReceive('foo')->with(1, Mockery::type('object`'))->never();
+        $this->spy->whenReceives('foo')->times(3);
+        $this->spy->whenReceives('foo')->with(1, Mockery::type('object`'))->never();
         $this->spy->foo();
         $this->spy->foo(1);
         $this->spy->foo(1, 2, 3);
@@ -1004,22 +1001,22 @@ class CallStoreTest extends PHPUnit_Framework_TestCase
      */
     /*public function testObjectConstraintThrowsExceptionWhenConstraintUnmatched()
     {
-        $this->spy->shouldReceive('foo')->with(Mockery::type('object'))->once();
+        $this->spy->whenReceives('foo')->with(Mockery::type('object'))->once();
         $this->spy->foo('f');
         $this->container->mockery_verify();
     }
     
     public function testRealConstraintMatchesArgument()
     {
-        $this->spy->shouldReceive('foo')->with(Mockery::type('real'))->once();
+        $this->spy->whenReceives('foo')->with(Mockery::type('real'))->once();
         $this->spy->foo(2.25);
         $this->container->mockery_verify();
     }
     
     public function testRealConstraintNonMatchingCase()
     {
-        $this->spy->shouldReceive('foo')->times(3);
-        $this->spy->shouldReceive('foo')->with(1, Mockery::type('real'))->never();
+        $this->spy->whenReceives('foo')->times(3);
+        $this->spy->whenReceives('foo')->with(1, Mockery::type('real'))->never();
         $this->spy->foo();
         $this->spy->foo(1);
         $this->spy->foo(1, 2, 3);
@@ -1031,14 +1028,14 @@ class CallStoreTest extends PHPUnit_Framework_TestCase
      */
     /*public function testRealConstraintThrowsExceptionWhenConstraintUnmatched()
     {
-        $this->spy->shouldReceive('foo')->with(Mockery::type('real'))->once();
+        $this->spy->whenReceives('foo')->with(Mockery::type('real'))->once();
         $this->spy->foo('f');
         $this->container->mockery_verify();
     }
     
     public function testResourceConstraintMatchesArgument()
     {
-        $this->spy->shouldReceive('foo')->with(Mockery::type('resource'))->once();
+        $this->spy->whenReceives('foo')->with(Mockery::type('resource'))->once();
         $r = fopen(dirname(__FILE__) . '/_files/file.txt', 'r');
         $this->spy->foo($r);
         $this->container->mockery_verify();
@@ -1046,8 +1043,8 @@ class CallStoreTest extends PHPUnit_Framework_TestCase
     
     public function testResourceConstraintNonMatchingCase()
     {
-        $this->spy->shouldReceive('foo')->times(3);
-        $this->spy->shouldReceive('foo')->with(1, Mockery::type('resource'))->never();
+        $this->spy->whenReceives('foo')->times(3);
+        $this->spy->whenReceives('foo')->with(1, Mockery::type('resource'))->never();
         $this->spy->foo();
         $this->spy->foo(1);
         $this->spy->foo(1, 2, 3);
@@ -1059,22 +1056,22 @@ class CallStoreTest extends PHPUnit_Framework_TestCase
      */
     /*public function testResourceConstraintThrowsExceptionWhenConstraintUnmatched()
     {
-        $this->spy->shouldReceive('foo')->with(Mockery::type('resource'))->once();
+        $this->spy->whenReceives('foo')->with(Mockery::type('resource'))->once();
         $this->spy->foo('f');
         $this->container->mockery_verify();
     }
     
     public function testScalarConstraintMatchesArgument()
     {
-        $this->spy->shouldReceive('foo')->with(Mockery::type('scalar'))->once();
+        $this->spy->whenReceives('foo')->with(Mockery::type('scalar'))->once();
         $this->spy->foo(2);
         $this->container->mockery_verify();
     }
     
     public function testScalarConstraintNonMatchingCase()
     {
-        $this->spy->shouldReceive('foo')->times(3);
-        $this->spy->shouldReceive('foo')->with(1, Mockery::type('scalar'))->never();
+        $this->spy->whenReceives('foo')->times(3);
+        $this->spy->whenReceives('foo')->with(1, Mockery::type('scalar'))->never();
         $this->spy->foo();
         $this->spy->foo(1);
         $this->spy->foo(1, 2, 3);
@@ -1086,22 +1083,22 @@ class CallStoreTest extends PHPUnit_Framework_TestCase
      */
     /*public function testScalarConstraintThrowsExceptionWhenConstraintUnmatched()
     {
-        $this->spy->shouldReceive('foo')->with(Mockery::type('scalar'))->once();
+        $this->spy->whenReceives('foo')->with(Mockery::type('scalar'))->once();
         $this->spy->foo(array());
         $this->container->mockery_verify();
     }
     
     public function testStringConstraintMatchesArgument()
     {
-        $this->spy->shouldReceive('foo')->with(Mockery::type('string'))->once();
+        $this->spy->whenReceives('foo')->with(Mockery::type('string'))->once();
         $this->spy->foo('2');
         $this->container->mockery_verify();
     }
     
     public function testStringConstraintNonMatchingCase()
     {
-        $this->spy->shouldReceive('foo')->times(3);
-        $this->spy->shouldReceive('foo')->with(1, Mockery::type('string'))->never();
+        $this->spy->whenReceives('foo')->times(3);
+        $this->spy->whenReceives('foo')->with(1, Mockery::type('string'))->never();
         $this->spy->foo();
         $this->spy->foo(1);
         $this->spy->foo(1, 2, 3);
@@ -1113,22 +1110,22 @@ class CallStoreTest extends PHPUnit_Framework_TestCase
      */
     /*public function testStringConstraintThrowsExceptionWhenConstraintUnmatched()
     {
-        $this->spy->shouldReceive('foo')->with(Mockery::type('string'))->once();
+        $this->spy->whenReceives('foo')->with(Mockery::type('string'))->once();
         $this->spy->foo(1);
         $this->container->mockery_verify();
     }
     
     public function testClassConstraintMatchesArgument()
     {
-        $this->spy->shouldReceive('foo')->with(Mockery::type('stdClass'))->once();
+        $this->spy->whenReceives('foo')->with(Mockery::type('stdClass'))->once();
         $this->spy->foo(new stdClass);
         $this->container->mockery_verify();
     }
     
     public function testClassConstraintNonMatchingCase()
     {
-        $this->spy->shouldReceive('foo')->times(3);
-        $this->spy->shouldReceive('foo')->with(1, Mockery::type('stdClass'))->never();
+        $this->spy->whenReceives('foo')->times(3);
+        $this->spy->whenReceives('foo')->with(1, Mockery::type('stdClass'))->never();
         $this->spy->foo();
         $this->spy->foo(1);
         $this->spy->foo(1, 2, 3);
@@ -1140,22 +1137,22 @@ class CallStoreTest extends PHPUnit_Framework_TestCase
      */
     /*public function testClassConstraintThrowsExceptionWhenConstraintUnmatched()
     {
-        $this->spy->shouldReceive('foo')->with(Mockery::type('stdClass'))->once();
+        $this->spy->whenReceives('foo')->with(Mockery::type('stdClass'))->once();
         $this->spy->foo(new Exception);
         $this->container->mockery_verify();
     }
     
     public function testDucktypeConstraintMatchesArgument()
     {
-        $this->spy->shouldReceive('foo')->with(Mockery::ducktype('quack', 'swim'))->once();
+        $this->spy->whenReceives('foo')->with(Mockery::ducktype('quack', 'swim'))->once();
         $this->spy->foo(new Mockery_Duck);
         $this->container->mockery_verify();
     }
     
     public function testDucktypeConstraintNonMatchingCase()
     {
-        $this->spy->shouldReceive('foo')->times(3);
-        $this->spy->shouldReceive('foo')->with(1, Mockery::ducktype('quack', 'swim'))->never();
+        $this->spy->whenReceives('foo')->times(3);
+        $this->spy->whenReceives('foo')->with(1, Mockery::ducktype('quack', 'swim'))->never();
         $this->spy->foo();
         $this->spy->foo(1);
         $this->spy->foo(1, 2, 3);
@@ -1167,22 +1164,22 @@ class CallStoreTest extends PHPUnit_Framework_TestCase
      */
     /*public function testDucktypeConstraintThrowsExceptionWhenConstraintUnmatched()
     {
-        $this->spy->shouldReceive('foo')->with(Mockery::ducktype('quack', 'swim'))->once();
+        $this->spy->whenReceives('foo')->with(Mockery::ducktype('quack', 'swim'))->once();
         $this->spy->foo(new Mockery_Duck_Nonswimmer);
         $this->container->mockery_verify();
     }
     
     public function testArrayContentConstraintMatchesArgument()
     {
-        $this->spy->shouldReceive('foo')->with(Mockery::subset(array('a'=>1,'b'=>2)))->once();
+        $this->spy->whenReceives('foo')->with(Mockery::subset(array('a'=>1,'b'=>2)))->once();
         $this->spy->foo(array('a'=>1,'b'=>2,'c'=>3));
         $this->container->mockery_verify();
     }
     
     public function testArrayContentConstraintNonMatchingCase()
     {
-        $this->spy->shouldReceive('foo')->times(3);
-        $this->spy->shouldReceive('foo')->with(1, Mockery::subset(array('a'=>1,'b'=>2)))->never();
+        $this->spy->whenReceives('foo')->times(3);
+        $this->spy->whenReceives('foo')->with(1, Mockery::subset(array('a'=>1,'b'=>2)))->never();
         $this->spy->foo();
         $this->spy->foo(1);
         $this->spy->foo(1, 2, 3);
@@ -1194,22 +1191,22 @@ class CallStoreTest extends PHPUnit_Framework_TestCase
      */
     /*public function testArrayContentConstraintThrowsExceptionWhenConstraintUnmatched()
     {
-        $this->spy->shouldReceive('foo')->with(Mockery::subset(array('a'=>1,'b'=>2)))->once();
+        $this->spy->whenReceives('foo')->with(Mockery::subset(array('a'=>1,'b'=>2)))->once();
         $this->spy->foo(array('a'=>1,'c'=>3));
         $this->container->mockery_verify();
     }
     
     public function testContainsConstraintMatchesArgument()
     {
-        $this->spy->shouldReceive('foo')->with(Mockery::contains(1, 2))->once();
+        $this->spy->whenReceives('foo')->with(Mockery::contains(1, 2))->once();
         $this->spy->foo(array('a'=>1,'b'=>2,'c'=>3));
         $this->container->mockery_verify();
     }
     
     public function testContainsConstraintNonMatchingCase()
     {
-        $this->spy->shouldReceive('foo')->times(3);
-        $this->spy->shouldReceive('foo')->with(1, Mockery::contains(1, 2))->never();
+        $this->spy->whenReceives('foo')->times(3);
+        $this->spy->whenReceives('foo')->with(1, Mockery::contains(1, 2))->never();
         $this->spy->foo();
         $this->spy->foo(1);
         $this->spy->foo(1, 2, 3);
@@ -1221,22 +1218,22 @@ class CallStoreTest extends PHPUnit_Framework_TestCase
      */
     /*public function testContainsConstraintThrowsExceptionWhenConstraintUnmatched()
     {
-        $this->spy->shouldReceive('foo')->with(Mockery::contains(1, 2))->once();
+        $this->spy->whenReceives('foo')->with(Mockery::contains(1, 2))->once();
         $this->spy->foo(array('a'=>1,'c'=>3));
         $this->container->mockery_verify();
     }
     
     public function testHasKeyConstraintMatchesArgument()
     {
-        $this->spy->shouldReceive('foo')->with(Mockery::hasKey('c'))->once();
+        $this->spy->whenReceives('foo')->with(Mockery::hasKey('c'))->once();
         $this->spy->foo(array('a'=>1,'b'=>2,'c'=>3));
         $this->container->mockery_verify();
     }
     
     public function testHasKeyConstraintNonMatchingCase()
     {
-        $this->spy->shouldReceive('foo')->times(3);
-        $this->spy->shouldReceive('foo')->with(1, Mockery::hasKey('a'))->never();
+        $this->spy->whenReceives('foo')->times(3);
+        $this->spy->whenReceives('foo')->with(1, Mockery::hasKey('a'))->never();
         $this->spy->foo();
         $this->spy->foo(1);
         $this->spy->foo(1, array('a'=>1), 3);
@@ -1248,22 +1245,22 @@ class CallStoreTest extends PHPUnit_Framework_TestCase
      */
     /*public function testHasKeyConstraintThrowsExceptionWhenConstraintUnmatched()
     {
-        $this->spy->shouldReceive('foo')->with(Mockery::hasKey('c'))->once();
+        $this->spy->whenReceives('foo')->with(Mockery::hasKey('c'))->once();
         $this->spy->foo(array('a'=>1,'b'=>3));
         $this->container->mockery_verify();
     }
     
     public function testHasValueConstraintMatchesArgument()
     {
-        $this->spy->shouldReceive('foo')->with(Mockery::hasValue(1))->once();
+        $this->spy->whenReceives('foo')->with(Mockery::hasValue(1))->once();
         $this->spy->foo(array('a'=>1,'b'=>2,'c'=>3));
         $this->container->mockery_verify();
     }
     
     public function testHasValueConstraintNonMatchingCase()
     {
-        $this->spy->shouldReceive('foo')->times(3);
-        $this->spy->shouldReceive('foo')->with(1, Mockery::hasValue(1))->never();
+        $this->spy->whenReceives('foo')->times(3);
+        $this->spy->whenReceives('foo')->with(1, Mockery::hasValue(1))->never();
         $this->spy->foo();
         $this->spy->foo(1);
         $this->spy->foo(1, array('a'=>1), 3);
@@ -1275,7 +1272,7 @@ class CallStoreTest extends PHPUnit_Framework_TestCase
      */
     /*public function testHasValueConstraintThrowsExceptionWhenConstraintUnmatched()
     {
-        $this->spy->shouldReceive('foo')->with(Mockery::hasValue(2))->once();
+        $this->spy->whenReceives('foo')->with(Mockery::hasValue(2))->once();
         $this->spy->foo(array('a'=>1,'b'=>3));
         $this->container->mockery_verify();
     }
@@ -1283,7 +1280,7 @@ class CallStoreTest extends PHPUnit_Framework_TestCase
     public function testOnConstraintMatchesArgument_ClosureEvaluatesToTrue()
     {
         $function = function($arg){return $arg % 2 == 0;};
-        $this->spy->shouldReceive('foo')->with(Mockery::on($function))->once();
+        $this->spy->whenReceives('foo')->with(Mockery::on($function))->once();
         $this->spy->foo(4);
         $this->container->mockery_verify();
     }*/
@@ -1294,22 +1291,22 @@ class CallStoreTest extends PHPUnit_Framework_TestCase
     /*public function testOnConstraintThrowsExceptionWhenConstraintUnmatched_ClosureEvaluatesToFalse()
     {
         $function = function($arg){return $arg % 2 == 0;};
-        $this->spy->shouldReceive('foo')->with(Mockery::on($function))->once();
+        $this->spy->whenReceives('foo')->with(Mockery::on($function))->once();
         $this->spy->foo(5);
         $this->container->mockery_verify();
     }
     
     public function testMustBeConstraintMatchesArgument()
     {
-        $this->spy->shouldReceive('foo')->with(Mockery::mustBe(2))->once();
+        $this->spy->whenReceives('foo')->with(Mockery::mustBe(2))->once();
         $this->spy->foo(2);
         $this->container->mockery_verify();
     }
     
     public function testMustBeConstraintNonMatchingCase()
     {
-        $this->spy->shouldReceive('foo')->times(3);
-        $this->spy->shouldReceive('foo')->with(1, Mockery::mustBe(2))->never();
+        $this->spy->whenReceives('foo')->times(3);
+        $this->spy->whenReceives('foo')->with(1, Mockery::mustBe(2))->never();
         $this->spy->foo();
         $this->spy->foo(1);
         $this->spy->foo(1, 2, 3);
@@ -1321,7 +1318,7 @@ class CallStoreTest extends PHPUnit_Framework_TestCase
      */
     /*public function testMustBeConstraintThrowsExceptionWhenConstraintUnmatched()
     {
-        $this->spy->shouldReceive('foo')->with(Mockery::mustBe(2))->once();
+        $this->spy->whenReceives('foo')->with(Mockery::mustBe(2))->once();
         $this->spy->foo('2');
         $this->container->mockery_verify();
     }
@@ -1330,7 +1327,7 @@ class CallStoreTest extends PHPUnit_Framework_TestCase
     {
         $a = new stdClass; $a->foo = 1;
         $b = new stdClass; $b->foo = 1;
-        $this->spy->shouldReceive('foo')->with(Mockery::mustBe($a))->once();
+        $this->spy->whenReceives('foo')->with(Mockery::mustBe($a))->once();
         $this->spy->foo($b);
         $this->container->mockery_verify();
     }
@@ -1338,8 +1335,8 @@ class CallStoreTest extends PHPUnit_Framework_TestCase
     public function testMustBeConstraintNonMatchingCaseWithObject()
     {
         $a = new stdClass; $a->foo = 1;
-        $this->spy->shouldReceive('foo')->times(3);
-        $this->spy->shouldReceive('foo')->with(1, Mockery::mustBe($a))->never();
+        $this->spy->whenReceives('foo')->times(3);
+        $this->spy->whenReceives('foo')->with(1, Mockery::mustBe($a))->never();
         $this->spy->foo();
         $this->spy->foo(1);
         $this->spy->foo(1, $a, 3);
@@ -1353,23 +1350,23 @@ class CallStoreTest extends PHPUnit_Framework_TestCase
     {
         $a = new stdClass; $a->foo = 1;
         $b = new stdClass; $b->foo = 2;
-        $this->spy->shouldReceive('foo')->with(Mockery::mustBe($a))->once();
+        $this->spy->whenReceives('foo')->with(Mockery::mustBe($a))->once();
         $this->spy->foo($b);
         $this->container->mockery_verify();
     }
     
     public function testMatchPrecedenceBasedOnExpectedCallsFavouringExplicitMatch()
     {
-        $this->spy->shouldReceive('foo')->with(1)->once();
-        $this->spy->shouldReceive('foo')->with(Mockery::any())->never();
+        $this->spy->whenReceives('foo')->with(1)->once();
+        $this->spy->whenReceives('foo')->with(Mockery::any())->never();
         $this->spy->foo(1);
         $this->container->mockery_verify();
     }
     
     public function testMatchPrecedenceBasedOnExpectedCallsFavouringAnyMatch()
     {
-        $this->spy->shouldReceive('foo')->with(Mockery::any())->once();
-        $this->spy->shouldReceive('foo')->with(1)->never();
+        $this->spy->whenReceives('foo')->with(Mockery::any())->once();
+        $this->spy->whenReceives('foo')->with(1)->never();
         $this->spy->foo(1);
         $this->container->mockery_verify();
     }
@@ -1388,21 +1385,21 @@ class CallStoreTest extends PHPUnit_Framework_TestCase
     
     public function testOptionalMockRetrieval()
     {
-        $m = $this->container->mock('f')->shouldReceive('foo')->with(1)->andReturn(3)->mock();
+        $m = $this->container->mock('f')->whenReceives('foo')->with(1)->thenReturn(3)->mock();
         $this->assertTrue($m instanceof \Mockery\MockInterface);
     }
     
     public function testNotConstraintMatchesArgument()
     {
-        $this->spy->shouldReceive('foo')->with(Mockery::not(1))->once();
+        $this->spy->whenReceives('foo')->with(Mockery::not(1))->once();
         $this->spy->foo(2);
         $this->container->mockery_verify();
     }
     
     public function testNotConstraintNonMatchingCase()
     {
-        $this->spy->shouldReceive('foo')->times(3);
-        $this->spy->shouldReceive('foo')->with(1, Mockery::not(2))->never();
+        $this->spy->whenReceives('foo')->times(3);
+        $this->spy->whenReceives('foo')->with(1, Mockery::not(2))->never();
         $this->spy->foo();
         $this->spy->foo(1);
         $this->spy->foo(1, 2, 3);
@@ -1414,14 +1411,14 @@ class CallStoreTest extends PHPUnit_Framework_TestCase
      */
     /*public function testNotConstraintThrowsExceptionWhenConstraintUnmatched()
     {
-        $this->spy->shouldReceive('foo')->with(Mockery::not(2))->once();
+        $this->spy->whenReceives('foo')->with(Mockery::not(2))->once();
         $this->spy->foo(2);
         $this->container->mockery_verify();
     }
 
     public function testAnyOfConstraintMatchesArgument()
     {
-        $this->spy->shouldReceive('foo')->with(Mockery::anyOf(1, 2))->twice();
+        $this->spy->whenReceives('foo')->with(Mockery::anyOf(1, 2))->twice();
         $this->spy->foo(2);
         $this->spy->foo(1);
         $this->container->mockery_verify();
@@ -1429,8 +1426,8 @@ class CallStoreTest extends PHPUnit_Framework_TestCase
     
     public function testAnyOfConstraintNonMatchingCase()
     {
-        $this->spy->shouldReceive('foo')->times(3);
-        $this->spy->shouldReceive('foo')->with(1, Mockery::anyOf(1, 2))->never();
+        $this->spy->whenReceives('foo')->times(3);
+        $this->spy->whenReceives('foo')->with(1, Mockery::anyOf(1, 2))->never();
         $this->spy->foo();
         $this->spy->foo(1);
         $this->spy->foo(1, 2, 3);
@@ -1442,22 +1439,22 @@ class CallStoreTest extends PHPUnit_Framework_TestCase
      */
     /*public function testAnyOfConstraintThrowsExceptionWhenConstraintUnmatched()
     {
-        $this->spy->shouldReceive('foo')->with(Mockery::anyOf(1, 2))->once();
+        $this->spy->whenReceives('foo')->with(Mockery::anyOf(1, 2))->once();
         $this->spy->foo(3);
         $this->container->mockery_verify();
     }
     
     public function testNotAnyOfConstraintMatchesArgument()
     {
-        $this->spy->shouldReceive('foo')->with(Mockery::notAnyOf(1, 2))->once();
+        $this->spy->whenReceives('foo')->with(Mockery::notAnyOf(1, 2))->once();
         $this->spy->foo(3);
         $this->container->mockery_verify();
     }
     
     public function testNotAnyOfConstraintNonMatchingCase()
     {
-        $this->spy->shouldReceive('foo')->times(3);
-        $this->spy->shouldReceive('foo')->with(1, Mockery::notAnyOf(1, 2))->never();
+        $this->spy->whenReceives('foo')->times(3);
+        $this->spy->whenReceives('foo')->with(1, Mockery::notAnyOf(1, 2))->never();
         $this->spy->foo();
         $this->spy->foo(1);
         $this->spy->foo(1, 4, 3);
@@ -1469,7 +1466,7 @@ class CallStoreTest extends PHPUnit_Framework_TestCase
      */
     /*public function testNotAnyOfConstraintThrowsExceptionWhenConstraintUnmatched()
     {
-        $this->spy->shouldReceive('foo')->with(Mockery::notAnyOf(1, 2))->once();
+        $this->spy->whenReceives('foo')->with(Mockery::notAnyOf(1, 2))->once();
         $this->spy->foo(2);
         $this->container->mockery_verify();
     }*/
@@ -1481,7 +1478,7 @@ class CallStoreTest extends PHPUnit_Framework_TestCase
     {
         \Mockery::getConfiguration()->allowMockingNonExistentMethods(false);
         $mock = $this->container->mock('stdClass');
-        $mock->shouldReceive('foo');
+        $mock->whenReceives('foo');
     }*/
     
     /**
@@ -1491,7 +1488,7 @@ class CallStoreTest extends PHPUnit_Framework_TestCase
     {
         \Mockery::getConfiguration()->allowMockingNonExistentMethods(false);
         $mock = $this->container->mock(new stdClass);
-        $mock->shouldReceive('foo');
+        $mock->whenReceives('foo');
     }*/
     
 }

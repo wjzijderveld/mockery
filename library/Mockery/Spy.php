@@ -206,6 +206,10 @@ class Spy implements SpyInterface
      */
     public function __call($method, array $args)
     {
+        if (!isset($this->_mockery_expectations[$method])) {
+            $expectation = $this->shouldReceive($method);
+            call_user_func_array(array($expectation, 'with'), $args);
+        }
         if (isset($this->_mockery_expectations[$method])
         && !$this->_mockery_disableExpectationMatching) {
             $handler = $this->_mockery_expectations[$method];
