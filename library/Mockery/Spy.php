@@ -150,9 +150,31 @@ class Spy implements SpyInterface
         return $lastExpectation;
     }
     
+    /**
+     * Set expected method calls
+     *
+     * @param mixed
+     * @return \Mockery\Expectation
+     */
     public function whenReceives()
     {
         return call_user_func_array(array($this, 'shouldReceive'), func_get_args());
+    }
+    
+    /**
+     * Allows assertions against previous call record
+     *
+     * @param string $method
+     */
+    public function assertReceived($method)
+    {
+        if (!isset($this->_mockery_expectations[$method])) {
+            throw new \Mockery\Exception(
+                'A call to ' . get_class($this) . '::' . $method . '() was not'
+                . ' received as asserted'
+            );
+        }
+        return $this;
     }
     
     /**

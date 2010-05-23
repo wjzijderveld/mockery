@@ -101,37 +101,37 @@ class CallStoreTest extends PHPUnit_Framework_TestCase
     /**
      * @expectedException OutOfBoundsException
      */
-    /*public function testThrowsException()
+    public function testThrowsException()
     {
-        $this->spy->whenReceives('foo')->andThrow(new OutOfBoundsException);
+        $this->spy->whenReceives('foo')->thenThrow(new OutOfBoundsException);
         $this->spy->foo();
-    }*/
+    }
     
     /**
      * @expectedException OutOfBoundsException
      */
-    /*public function testThrowsExceptionBasedOnArgs()
+    public function testThrowsExceptionBasedOnArgs()
     {
-        $this->spy->whenReceives('foo')->andThrow('OutOfBoundsException');
+        $this->spy->whenReceives('foo')->thenThrow('OutOfBoundsException');
         $this->spy->foo();
     }
     
     public function testThrowsExceptionBasedOnArgsWithMessage()
     {
-        $this->spy->whenReceives('foo')->andThrow('OutOfBoundsException', 'foo');
+        $this->spy->whenReceives('foo')->thenThrow('OutOfBoundsException', 'foo');
         try {
             $this->spy->foo();
         } catch (OutOfBoundsException $e) {
             $this->assertEquals('foo', $e->getMessage());
         }
-    }*/
+    }
     
     /**
      * @expectedException OutOfBoundsException
      */
-    /*public function testThrowsExceptionSequentially()
+    public function testThrowsExceptionSequentially()
     {
-        $this->spy->whenReceives('foo')->andThrow(new Exception)->andThrow(new OutOfBoundsException);
+        $this->spy->whenReceives('foo')->thenThrow(new Exception)->thenThrow(new OutOfBoundsException);
         try {
             $this->spy->foo();
         } catch (Exception $e) {}
@@ -148,20 +148,31 @@ class CallStoreTest extends PHPUnit_Framework_TestCase
     
     public function testExpectsNoArguments()
     {
-        $this->spy->whenReceives('foo')->withNoArgs();
-        $this->spy->foo();
-    }*/
+        $this->spy->whenReceives('foo')->withNoArgs()->thenReturn(9);
+        $this->assertEquals(9, $this->spy->foo());
+    }
     
     /**
      * @expectedException \Mockery\Exception
      */
+    public function testThrowsExceptionWhenWeAssertReceiptofUnreceivedMethodCall()
+    {
+        $this->spy->assertReceived('foo');
+    }
+    
+    public function testThrowsExceptionWhenWeAssertReceiptofReceivedMethodCall()
+    {
+        $this->spy->foo();
+        $this->spy->assertReceived('foo');
+    }
+    
     /*public function testExpectsNoArgumentsThrowsExceptionIfAnyPassed()
     {
         $this->spy->whenReceives('foo')->withNoArgs();
         $this->spy->foo(1);
-    }
+    }*/
     
-    public function testExpectsAnyArguments()
+    /*public function testExpectsAnyArguments()
     {
         $this->spy->whenReceives('foo')->withAnyArgs();
         $this->spy->foo();
