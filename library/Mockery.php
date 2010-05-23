@@ -238,13 +238,18 @@ class Mockery
      * Utility function to parse shouldReceive() arguments and generate
      * expectations from such as needed.
      *
-     * @param \Mockery\MockInterface
+     * @param \Mockery\MockInterface|\Mockery\SpyInterface
      * @param array $args
      * @return \Mockery\CompositeExpectation
      */
-    public static function parseShouldReturnArgs(\Mockery\MockInterface $mock, $args, $add)
+    public static function parseShouldReturnArgs($mock, $args, $add)
     {
         $composite = new \Mockery\CompositeExpectation;
+        if ($mock instanceof \Mockery\MockInterface) {
+            $composite = new \Mockery\CompositeExpectation;
+        } else {
+            $composite = new \Mockery\CompositeCallStore;
+        }
         foreach ($args as $arg) {
             if (is_array($arg)) {
                 foreach($arg as $k=>$v) {
@@ -263,12 +268,12 @@ class Mockery
      * Sets up expectations on the members of the CompositeExpectation and
      * builds up any demeter chain that was passed to shouldReceive
      *
-     * @param \Mockery\MockInterface $mock
+     * @param \Mockery\MockInterface|\Mockery\SpyInterface $mock
      * @param string $arg
      * @param Closure $add
      * @return \Mockery\ExpectationDirector
      */
-    protected static function _buildDemeterChain(\Mockery\MockInterface $mock, $arg, $add)
+    protected static function _buildDemeterChain($mock, $arg, $add)
     {
         $container = $mock->mockery_getContainer();
         $names = explode('->', $arg);

@@ -64,7 +64,7 @@ class ExpectationDirector
      * @param string $name
      * @param \Mockery\MockInterface $mock
      */
-    public function __construct($name, \Mockery\MockInterface $mock)
+    public function __construct($name, $mock)
     {
         $this->_name = $name;
         $this->_mock = $mock;
@@ -75,7 +75,7 @@ class ExpectationDirector
      *
      * @param Mutateme\Expectation $expectation
      */
-    public function addExpectation(\Mockery\Expectation $expectation)
+    public function addExpectation($expectation)
     {
         $this->_expectations[] = $expectation;
     }

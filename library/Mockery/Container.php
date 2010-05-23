@@ -54,7 +54,7 @@ class Container
     /**
      * Generates a new mock object for this container
      *
-     * @return \Mockery\Mock
+     * @return \Mockery\MockInterface
      */
     public function mock()
     {
@@ -103,6 +103,66 @@ class Container
         }
         if (!empty($quickdefs)) {
             $mock->shouldReceive($quickdefs);
+        }
+        if (!empty($expectationClosure)) {
+            $expectationClosure($mock);
+        }
+        $this->rememberMock($mock);
+        return $mock;
+    }
+    
+    /**
+     * Generates a new test spy for this container
+     *
+     * @return \Mockery\SpyInterface
+     */
+    public function spy()
+    {
+        $class = null;
+        $name = null;
+        $partial = null;
+        $expectationClosure = null;
+        $quickdefs = array();
+        $args = func_get_args();
+        if (count($args) > 1) {
+            $finalArg = end($args);
+            reset($args);
+            if (is_callable($finalArg)) {
+                $expectationClosure = array_pop($args);
+            }
+        }
+        while (count($args) > 0) {
+            $arg = current($args);
+            if (is_string($arg) && (class_exists($arg, true) || interface_exists($arg, true))) {
+                $class = array_shift($args);
+            } elseif (is_string($arg)) {
+                $name = array_shift($args);
+            } elseif (is_object($arg)) {
+                $partial = array_shift($args);
+            } elseif (is_array($arg)) {
+                $quickdefs = array_shift($args);
+            } else {
+                throw new \Mockery\Exception(
+                    'Unable to parse arguments sent to '
+                    . get_class($this) . '::mock()'
+                );
+            }
+        }
+        if (!is_null($name)) {
+            $mock = new \Mockery\Spy();
+            $mock->mockery_init($name, $this);
+        } elseif(!is_null($class)) {
+            $mock = \Mockery\Generator::createClassSpy($class);
+            $mock->mockery_init($class, $this);
+        } elseif(!is_null($partial)) {
+            $mock = \Mockery\Generator::createClassSpy(get_class($partial), null, true);
+            $mock->mockery_init(get_class($partial), $this, $partial);
+        } else {
+            $mock = new \Mockery\Spy();
+            $mock->mockery_init('unknown', $this);
+        }
+        if (!empty($quickdefs)) {
+            $mock->whenReceives($quickdefs);
         }
         if (!empty($expectationClosure)) {
             $expectationClosure($mock);
@@ -226,10 +286,10 @@ class Container
     /**
      * Store a mock and set its container reference
      *
-     * @param \Mockery\Mock
-     * @return \Mockery\Mock
+     * @param \Mockery\MockInterface|\Mockery\SpyInterface
+     * @return mixed
      */
-    public function rememberMock(\Mockery\MockInterface $mock)
+    public function rememberMock($mock)
     {
         $this->_mocks[] = $mock;
         return $mock;
