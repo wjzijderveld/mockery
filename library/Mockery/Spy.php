@@ -139,7 +139,7 @@ class Spy implements SpyInterface
             $this, func_get_args(), function($method) use ($self) {
                 $director = $self->mockery_getExpectationsFor($method);
                 if (!$director) {
-                    $director = new \Mockery\ExpectationDirector($method, $self);
+                    $director = new \Mockery\CallStoreDirector($method, $self);
                     $self->mockery_setExpectationsFor($method, $director);
                 }
                 $expectation = new \Mockery\CallStore($self, $method);
@@ -174,7 +174,22 @@ class Spy implements SpyInterface
                 . ' received as asserted'
             );
         }
-        return $this;
+        return $this->_mockery_expectations[$method];
+    }
+    
+    /**
+     * Allows assertions against previous call record
+     *
+     * @param string $method
+     */
+    public function assertNeverReceived($method)
+    {
+        if (isset($this->_mockery_expectations[$method])) {
+            throw new \Mockery\Exception(
+                'A call to ' . get_class($this) . '::' . $method . '() was'
+                . ' received'
+            );
+        }
     }
     
     /**
@@ -231,6 +246,9 @@ class Spy implements SpyInterface
         if (!isset($this->_mockery_expectations[$method])) {
             $expectation = $this->shouldReceive($method);
             call_user_func_array(array($expectation, 'with'), $args);
+            if (empty($args)) {
+                $expectation->withNoArgs();    
+            }
         }
         if (isset($this->_mockery_expectations[$method])
         && !$this->_mockery_disableExpectationMatching) {
@@ -348,9 +366,9 @@ class Spy implements SpyInterface
      * Return the expectations director for the given method
      *
      * @var string $method
-     * @return \Mockery\ExpectationDirector|null
+     * @return \Mockery\CallStore|null
      */
-    public function mockery_setExpectationsFor($method, \Mockery\ExpectationDirector $director)
+    public function mockery_setExpectationsFor($method, \Mockery\CallStoreDirector $director)
     {
         $this->_mockery_expectations[$method] = $director;
     }
@@ -359,7 +377,7 @@ class Spy implements SpyInterface
      * Return the expectations director for the given method
      *
      * @var string $method
-     * @return \Mockery\ExpectationDirector|null
+     * @return \Mockery\CallStore|null
      */
     public function mockery_getExpectationsFor($method)
     {
@@ -373,7 +391,7 @@ class Spy implements SpyInterface
      *
      * @var string $method
      * @var array $args
-     * @return \Mockery\Expectation|null
+     * @return \Mockery\CallStore|null
      */
     public function mockery_findExpectation($method, array $args)
     {

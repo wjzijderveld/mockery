@@ -42,6 +42,14 @@ interface SpyInterface
     public function shouldReceive();
     
     /**
+     * Set expected method calls
+     *
+     * @param mixed
+     * @return \Mockery\Expectation
+     */
+    public function whenReceives();
+    
+    /**
      * Set mock to ignore unexpected methods and return Undefined class
      *
      * @return void
@@ -131,15 +139,15 @@ interface SpyInterface
      * Return the expectations director for the given method
      *
      * @var string $method
-     * @return \Mockery\ExpectationDirector|null
+     * @return \Mockery\CallStoreDirector|null
      */
-    public function mockery_setExpectationsFor($method, \Mockery\ExpectationDirector $director);
+    public function mockery_setExpectationsFor($method, \Mockery\CallStoreDirector $director);
     
     /**
      * Return the expectations director for the given method
      *
      * @var string $method
-     * @return \Mockery\ExpectationDirector|null
+     * @return \Mockery\CallStoreDirector|null
      */
     public function mockery_getExpectationsFor($method);
     
@@ -148,7 +156,7 @@ interface SpyInterface
      *
      * @var string $method
      * @var array $args
-     * @return \Mockery\Expectation|null
+     * @return \Mockery\CallStore|null
      */
     public function mockery_findExpectation($method, array $args);
     

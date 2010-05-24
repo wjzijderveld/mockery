@@ -166,57 +166,74 @@ class CallStoreTest extends PHPUnit_Framework_TestCase
         $this->spy->assertReceived('foo');
     }
     
-    /*public function testExpectsNoArgumentsThrowsExceptionIfAnyPassed()
+    /**
+     * @expectedException \Mockery\Exception
+     */
+    public function testExpectsNoArgumentsThrowsExceptionIfAnyPassed()
     {
-        $this->spy->whenReceives('foo')->withNoArgs();
-        $this->spy->foo(1);
-    }*/
-    
-    /*public function testExpectsAnyArguments()
-    {
-        $this->spy->whenReceives('foo')->withAnyArgs();
         $this->spy->foo();
+        $this->spy->assertReceived('foo')->with(1);
+    }
+    
+    public function testExpectsAnyArgumentsWhenNoneGiven()
+    {
+        $this->spy->foo();
+        $this->spy->assertReceived('foo');
+    }
+    
+    public function testExpectsAnyArgumentsWhenOneGiven()
+    {
         $this->spy->foo(1);
+        $this->spy->assertReceived('foo');
+    }
+    
+    public function testExpectsAnyArgumentsWhenManyGiven()
+    {
         $this->spy->foo(1, 'k', new stdClass);
+        $this->spy->assertReceived('foo');
+    }
+    
+    public function testAnyArgs()
+    {
+        $this->markTestIncomplete();
     }
     
     public function testExpectsArgumentMatchingRegularExpression()
     {
-        $this->spy->whenReceives('foo')->with('/bar/i');
         $this->spy->foo('xxBARxx');
+        $this->spy->assertReceived('foo')->with('/bar/i');
     }
     
     public function testExpectsArgumentMatchingObjectType()
     {
-        $this->spy->whenReceives('foo')->with('\stdClass');
         $this->spy->foo(new stdClass);
-    }*/
+        $this->spy->assertReceived('foo')->with('\stdClass');
+    }
     
     /**
      * @expectedException \Mockery\Exception
      */
-    /*public function testThrowsExceptionOnNoArgumentMatch()
+    public function testThrowsExceptionOnNoArgumentMatch()
     {
-        $this->spy->whenReceives('foo')->with(1);
         $this->spy->foo(2);
+        $this->spy->assertReceived('foo')->with(1);
     }
     
     public function testNeverCalled()
     {
-        $this->spy->whenReceives('foo')->never();
-    }*/
-    
-    /**
-     * @expectedException \Mockery\CountValidator\Exception
-     */
-    /*public function testNeverCalledThrowsExceptionOnCall()
-    {
-        $this->spy->whenReceives('foo')->never();
-        $this->spy->foo();
-        $this->container->mockery_verify();
+        $this->spy->assertNeverReceived('foo');
     }
     
-    public function testCalledOnce()
+    /**
+     * @expectedException \Mockery\Exception
+     */
+    public function testNeverCalledThrowsExceptionOnCall()
+    {
+        $this->spy->foo();
+        $this->spy->assertNeverReceived('foo');
+    }
+    
+    /*public function testCalledOnce()
     {
         $this->spy->whenReceives('foo')->once();
         $this->spy->foo();

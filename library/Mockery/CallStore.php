@@ -265,7 +265,7 @@ class CallStore
      * @param array $args
      * @return bool
      */
-    protected function _matchArg($expected, $actual)
+    protected function _matchArg($actual, $expected)
     {
         if ($expected === $actual) {
             return true;
