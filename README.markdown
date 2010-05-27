@@ -1,9 +1,9 @@
 Mockery
 ========
 
-Mockery is a simple but flexible mock object framework for use in unit testing.
-It is inspired most obviously by Ruby's flexmock library whose API has been
-borrowed from as much as possible.
+Mockery is a simple but flexible PHP mock object framework for use in unit testing.
+It is inspired by Ruby's flexmock and Java's Mockito, borowing elements from
+both of their APIs.
 
 Mockery is released under a New BSD License.
 
@@ -17,8 +17,9 @@ requiring actual implementation.
 
 The benefits of a mock object framework are to allow for the flexible generation
 of such mock objects (and stubs). They allow the setting of expected method calls
-and return values using a flexible scheme which is capable of capturing every
-possible real object behaviour.
+and return values using a flexible API which is capable of capturing every
+possible real object behaviour in way that is as close as possible to a
+natural language description.
 
 Prerequisites
 -------------
@@ -28,15 +29,20 @@ Mockery requires PHP 5.3 which is its sole prerequisite.
 Installation
 ------------
 
-The preferred installation method is via PEAR. At present no PEAR channel
-has been provided but this does not prevent a simple install! The simplest
-method of installation is:
+The preferred installation method is via PEAR. Mockery is hosted by the
+Survivethedeepend.com PEAR channel:
+
+    pear channel-discover pear.survivethedeepend.com
+    pear install deepend/Mockery
+    
+The git repository hosts the development version in its master branch. You may
+install this development version using:
 
     git clone git://github.com/padraic/mockery.git
     cd mockery
     sudo pear install package.xml
 
-The above process will install Mockery as a PEAR library.
+The above processes will install Mockery as a PEAR library.
 
 Simple Example
 --------------
@@ -88,33 +94,6 @@ Note: PHPUnit integration (see below) can remove the need for a teardown() metho
             $service = m::mock('service');
             $service->shouldReceive('readTemp')->times(3)->andReturn(10, 12, 14);
             $temperature = new Temperature($service);
-            $this->assertEquals(12, $temperature->average());
-        }
-
-    }
-    
-Since Mockery implements a Test Spy API as an alternative to the traditional
-setting of expectations prior to exercising source code, the above test can
-also be written as follows. The concept of using a Test Spy rather than an
-expectation based Mock Object, is that it more naturally follows the typical
-unit testing flow where assertions are made after the code being tested is run.
-
-    use \Mockery as m;
-    
-    class TemperatureTest extends extends PHPUnit_Framework_TestCase
-    {
-        
-        public function teardown()
-        {
-            m::close();
-        }
-        
-        public function testGetsAverageTemperatureFromThreeServiceReadings()
-        {
-            $service = m::mock('service');
-            $service->whenReceive('readTemp')->thenReturn(10, 12, 14);
-            $temperature = new Temperature($service);
-            $service->assertReceived('readTemp')->times(3);
             $this->assertEquals(12, $temperature->average());
         }
 
@@ -263,7 +242,7 @@ expectations or constraints.
 Declares a number of expected calls but also their return values. All will
 adopt any additional chained expectations or constraints.
 
-    shouldExpect(closure)
+    shouldReceive(closure)
     
 Creates a mock object (only from a partial mock) which is used to create a mock
 object recorder. The recorder is a simple proxy to the original object passed
@@ -358,7 +337,7 @@ also means no calls are acceptable.
     between(min, max)
     
 Sets an expected range of call counts. This is actually identical to using
-atLeast()->times(min)->atMost()->times(max) but it provided as a shorthand.
+atLeast()->times(min)->atMost()->times(max) but is provided as a shorthand.
 It may be followed by a times() call with no parameter to preserve the
 APIs natural language readability.
 
@@ -502,7 +481,7 @@ of keys is ignored.
     
 Matches any argument which is an array containing the given key name.
 
-    with(\Mockery::hasValue(key));
+    with(\Mockery::hasValue(value));
     
 Matches any argument which is an array containing the given value.
 
@@ -523,7 +502,7 @@ Partial mocks are therefore constructed as a Proxy with an embedded real object.
 The Proxy itself inherits the type of the embedded object (type safety) and
 it otherwise behaves like any other Mockery-based mock object, allowing you to
 dynamically define expectations. This flexibility means there's little
-upfront defining (besides setting up the real object - you can set defaults,
+upfront defining (besides setting up the real object) and you can set defaults,
 expectations and ordering on the fly.
 
 Default Mock Expectations
@@ -569,6 +548,9 @@ that the method name is simply the string of all expected chain calls separated
 by "->". Mockery will automatically setup the chain of expected calls with
 its final return values, regardless of whatever intermediary object might be
 used in the real implementation.
+
+Arguments to all members of the chain (except the final call) are ignored in
+this process.
 
 Mock Object Recording
 ---------------------
@@ -705,7 +687,6 @@ implemented on the classes or objects being mocked without creating a method
 name collision (reported as a PHP fatal error). The methods reserved by Mockery are:
 
 * shouldReceive()
-* shouldExpect()
 * shouldBeStrict()
 
 In addition, all mocks utilise a set of added methods and protected properties
