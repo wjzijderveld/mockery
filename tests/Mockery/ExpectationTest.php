@@ -1607,6 +1607,17 @@ class ExpectationTest extends PHPUnit_Framework_TestCase
         
         $mock->foo('spam', 'ham');
     }
+    
+    public function testIssue33()
+    {
+    	$obj = new Mockery_Mock_PartialTest_Issue33('IS ');
+    	$mock = \Mockery::mock($obj);
+    	$mock->shouldReceive('getData')->andReturn('MOCKED');
+    	$ref = new \ReflectionClass($mock);
+    	
+    	$this->assertEquals('IS MOCKED', $mock->getResult());
+    	var_dump($ref->getMethod('getResult'));exit;
+    }
 }
 
 class MockeryTest_InterMethod1
@@ -1659,4 +1670,25 @@ class Mockery_UseDemeter {
     public function doit() {
         return $this->demeter->foo()->bar()->baz();
     }
+}
+
+class Mockery_Mock_PartialTest_Issue33
+{
+	public $preData;
+	
+	public function __construct($preData)
+	{
+		$this->preData = $preData;
+	}
+	
+	public function getResult()
+	{
+		var_dump($this, $ref = new \ReflectionClass($this), $ref->getMethods());exit;
+		return $this->preData . $this->getData();
+	}
+	
+	public function getData()
+	{
+		return 'ORIGINAL';
+	}
 }
